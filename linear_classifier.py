@@ -1,10 +1,13 @@
 import numpy as np
+from hinge_loss import *
+from crossEntropy_loss import *
 
 
 class LinearClassifier(object):
 
-    def __init__(self):
+    def __init__(self, loss='hinge'):
         self.W = None
+        self.criterion = loss
 
 
     def train(self, X, y, learning_rate=1e-3, reg=1e-5, num_iters=100, batch_size=100, verbose=False):
@@ -67,4 +70,10 @@ class LinearClassifier(object):
 
 
     def loss(self, X_batch, y_batch, reg):
-        pass
+        if self.criterion == 'hinge':
+          '''use the Multiclass SVM loss function'''
+          return svm_loss_vectorized(self.W, X_batch, y_batch, reg)
+
+        elif self.criterion == 'crossEntropy':
+          '''use the Softmax + Cross-entropy loss function'''
+          return softmax_loss_vectorized(self.W, X_batch, y_batch, reg)
