@@ -55,14 +55,14 @@ def svm_loss_vectorized(W, X, y, reg):
 
     # compute the loss
     scores = np.dot(X, W) # (N, C)
-    margin = np.maximum(0, scores.T - scores[range(num_train), y] + 1).T
+    margin = np.maximum(0, scores.T - scores[range(num_train), y] + 1).T # 逐位比较取其大者,会用到broadcast机制
     margin[range(num_train), y] = 0 # let i != j
     data_loss = np.sum(margin) * 1.0 / num_train
     reg_loss = reg * np.sum(np.square(margin))
     loss = data_loss + reg_loss
 
     # compute the gradient
-    X_effect = (margin > 0).astype(np.float32) # 每个样本i在非y[i]的类上产生X[i]的梯度
+    X_effect = (margin > 0).astype('float') # 每个样本i在非y[i]的类上产生X[i]的梯度
     X_effect[range(num_train), y] -= np.sum(X_effect, axis=1)
     dW = np.dot(X.T, X_effect)
     dW = dW / num_train + 2 * reg * W
