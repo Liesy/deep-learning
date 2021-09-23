@@ -1,2 +1,6 @@
-# deep-learning
-DL学习过程中的笔记、源码
+# Deep Learning
+
+---
+
+- LiYang, CS-AI, Shandong University
+- Sep 23th, 2021 Created
