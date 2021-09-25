@@ -1,13 +1,12 @@
 import numpy as np
-from hinge_loss import *
-from crossEntropy_loss import *
+from utils.classifiers.linear_svm import *
+from utils.classifiers.softmax import *
 
 
 class LinearClassifier(object):
 
-    def __init__(self, loss='hinge'):
+    def __init__(self):
         self.W = None
-        self.criterion = loss
 
 
     def train(self, X, y, learning_rate=1e-3, reg=1e-5, num_iters=100, batch_size=100, verbose=False):
@@ -70,10 +69,32 @@ class LinearClassifier(object):
 
 
     def loss(self, X_batch, y_batch, reg):
-        if self.criterion == 'hinge':
-          '''use the Multiclass SVM loss function'''
-          return svm_loss_vectorized(self.W, X_batch, y_batch, reg)
+        """
+        Compute the loss function and its derivative.
+        Subclasses will override this.
 
-        elif self.criterion == 'crossEntropy':
-          '''use the Softmax + Cross-entropy loss function'''
-          return softmax_loss_vectorized(self.W, X_batch, y_batch, reg)
+        Inputs:
+        - X_batch: A numpy array of shape (N, D) containing a minibatch of N
+          data points; each point has dimension D.
+        - y_batch: A numpy array of shape (N,) containing labels for the minibatch.
+        - reg: (float) regularization strength.
+
+        Returns: A tuple containing:
+        - loss as a single float
+        - gradient with respect to self.W; an array of the same shape as W
+        """
+        pass
+
+
+class LinearSVM(LinearClassifier):
+    """ A subclass that uses the Multiclass SVM loss function """
+
+    def loss(self, X_batch, y_batch, reg):
+        return svm_loss_vectorized(self.W, X_batch, y_batch, reg)
+
+
+class Softmax(LinearClassifier):
+    """ A subclass that uses the Softmax + Cross-entropy loss function """
+
+    def loss(self, X_batch, y_batch, reg):
+        return softmax_loss_vectorized(self.W, X_batch, y_batch, reg)
