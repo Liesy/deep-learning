@@ -52,7 +52,7 @@ def softmax_loss_vectorized(W, X, y, reg):
 
     # compute the loss
     loss = np.sum(-np.log(exp_normalized_scores[range(num_train), y] * 1.0 / np.sum(exp_normalized_scores, axis=1)))
-    loss = loss / num_train + reg + np.sum(np.square(W))
+    loss = loss / num_train + reg * np.sum(np.square(W))
 
     # compute the gradient
     acc_effect = (exp_normalized_scores.T / np.sum(exp_normalized_scores, axis=1)).T

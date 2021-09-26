@@ -1,9 +1,5 @@
-from __future__ import print_function
-
-from builtins import range
-from builtins import object
 import numpy as np
-import matplotlib.pyplot as plt
+
 
 class ThreeLayerNet(object):
     """
@@ -28,8 +24,8 @@ class ThreeLayerNet(object):
 
         W1: First layer weights; has shape (D, H)
         b1: First layer biases; has shape (H,)
-        W2: Second layer weights; has shape (H, C)
-        b2: Second layer biases; has shape (C,)
+        W2: Second layer weights; has shape (H, H)
+        b2: Second layer biases; has shape (H,)
         W3: Third layer weights; has shape (H, C)
         b3: Third layer biases; has shape (C,)
 
@@ -46,8 +42,6 @@ class ThreeLayerNet(object):
         self.params['b2'] = np.zeros(hidden_size)
         self.params['W3'] = std * np.random.randn(hidden_size, output_size)
         self.params['b3'] = np.zeros(output_size)
-
-
 
     def loss(self, X, y=None, reg=0.0):
         """
@@ -79,48 +73,59 @@ class ThreeLayerNet(object):
         N, D = X.shape
 
         # Compute the forward pass
-        scores = None
-        #############################################################################
-        # TODO: Perform the forward pass, computing the class scores for the input. #
-        # Store the result in the scores variable, which should be an array of      #
-        # shape (N, C).                                                             #
-        #############################################################################
-        # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
-        pass
-
-        # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+        layer_1 = np.max(0, np.dot(X, W1) + b1)  # (N,D)*(D,H)=(N,H)
+        layer_2 = np.max(0, np.dot(layer_1, W2) + b2)  # (N,H)*(H,H)=(N,H)
+        fcn_3 = np.dot(layer_2, W3) + b3  # (N,H)*(H,C)=(N,C)
+        scores = fcn_3
+        # softmax
+        # (C,N)-[(1,N)->(C,N)]=(C,N)再转置为(N,C)
+        exp_scores = np.exp((scores.T - np.max(scores, axis=1)).T)
+        exp_scores_sum = np.sum(exp_scores, axis=1)  # (1,N)
+        layer_3 = (exp_scores.T * 1.0 / exp_scores_sum).T # prob_allClass
 
         # If the targets are not given then jump out, we're done
         if y is None:
             return scores
 
-        # Compute the loss
-        loss = None
-        #############################################################################
-        # TODO: Finish the forward pass, and compute the loss. This should include  #
-        # both the data loss and L2 regularization for W1 and W2. Store the result  #
-        # in the variable loss, which should be a scalar. Use the Softmax           #
-        # classifier loss.                                                          #
-        #############################################################################
-        # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
-        pass
-
-        # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+        # Compute the loss. Use the Softmax classifier loss.
+        prob_i = layer_3[range(N), y] # prob of correct class
+        loss_sum = np.sum(-np.log(prob_i))
+        regression = reg * (np.sum(np.square(W1) + np.square(W2) + np.square(W3)))
+        loss = loss_sum / N + regression
 
         # Backward pass: compute gradients
         grads = {}
-        #############################################################################
-        # TODO: Compute the backward pass, computing the derivatives of the weights #
-        # and biases. Store the results in the grads dictionary. For example,       #
-        # grads['W1'] should store the gradient on W1, and be a matrix of same size #
-        #############################################################################
-        # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+        dW1 = 2 * reg * W1
+        dW2 = 2 * reg * W2
+        dW3 = 2 * reg * W3
 
-        pass
+        # grad of softmax https://zhuanlan.zhihu.com/p/25723112
+        dsoftmax = layer_3
+        dsoftmax[range(N), y] -= 1.0
 
-        # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+        db3 = np.dot(np.ones(N), dsoftmax)
+        dW3 += np.dot(layer_2.T, dsoftmax)
+
+        dlayer_2 = np.dot(dsoftmax, W3.T)
+        dReLU2 = dlayer_2
+        dReLU2[np.where(dReLU2 <= 0)] = 0.0
+
+        db2 = np.dot(np.ones(N), dReLU2)
+        dW2 += np.dot(layer_1.T, dReLU2)
+
+        dlayer_1 = np.dot(dReLU2, W2.T)
+        dReLU1 = dlayer_1
+        dReLU1[np.where(dReLU1 <= 0)] = 0.0
+
+        db1 = np.dot(np.ones(N), dReLU1)
+        dW1 += np.dot(X.T, dReLU1)
+
+        grads['W1'] = dW1
+        grads['b1'] = db1
+        grads['W2'] = dW2
+        grads['b2'] = db2
+        grads['W3'] = dW3
+        grads['b3'] = db3
 
         return loss, grads
 
@@ -145,7 +150,7 @@ class ThreeLayerNet(object):
         - batch_size: Number of training examples to use per step.
         - verbose: boolean; if true print progress during optimization.
         """
-        num_train = X.shape[0]
+        num_train = X.shape[0]  # (N,)
         iterations_per_epoch = max(num_train / batch_size, 1)
 
         # Use SGD to optimize the parameters in self.model
@@ -154,34 +159,16 @@ class ThreeLayerNet(object):
         val_acc_history = []
 
         for it in range(num_iters):
-            X_batch = None
-            y_batch = None
-
-            #########################################################################
-            # TODO: Create a random minibatch of training data and labels, storing  #
-            # them in X_batch and y_batch respectively.                             #
-            #########################################################################
-            # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
-            pass
-
-            # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+            batch_idx = np.random.choice(num_train, batch_size)
+            X_batch = [batch_idx]
+            y_batch = [batch_idx]
 
             # Compute loss and gradients using the current minibatch
-            loss, grads = self.loss(X_batch, y=y_batch, reg=reg)
+            loss, grads = self.loss(X_batch, y_batch, reg=reg)
             loss_history.append(loss)
 
-            #########################################################################
-            # TODO: Use the gradients in the grads dictionary to update the         #
-            # parameters of the network (stored in the dictionary self.params)      #
-            # using stochastic gradient descent. You'll need to use the gradients   #
-            # stored in the grads dictionary defined above.                         #
-            #########################################################################
-            # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
-            pass
-
-            # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+            for name in self.params:
+                self.params[name] -= learning_rate * grads[name]  # sgd
 
             if verbose and it % 100 == 0:
                 print('iteration %d / %d: loss %f' % (it, num_iters, loss))
@@ -198,9 +185,9 @@ class ThreeLayerNet(object):
                 learning_rate *= learning_rate_decay
 
         return {
-          'loss_history': loss_history,
-          'train_acc_history': train_acc_history,
-          'val_acc_history': val_acc_history,
+            'loss_history': loss_history,
+            'train_acc_history': train_acc_history,
+            'val_acc_history': val_acc_history,
         }
 
     def predict(self, X):
@@ -218,15 +205,7 @@ class ThreeLayerNet(object):
           the elements of X. For all i, y_pred[i] = c means that X[i] is predicted
           to have class c, where 0 <= c < C.
         """
-        y_pred = None
-
-        ###########################################################################
-        # TODO: Implement this function; it should be VERY simple!                #
-        ###########################################################################
-        # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
-        pass
-
-        # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+        scores = self.loss(X) # (N,C)
+        y_pred = np.argmax(scores, axis=1) # (1,N)
 
         return y_pred
