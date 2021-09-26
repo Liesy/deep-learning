@@ -73,8 +73,8 @@ class ThreeLayerNet(object):
         N, D = X.shape
 
         # Compute the forward pass
-        layer_1 = np.max(0, np.dot(X, W1) + b1)  # (N,D)*(D,H)=(N,H)
-        layer_2 = np.max(0, np.dot(layer_1, W2) + b2)  # (N,H)*(H,H)=(N,H)
+        layer_1 = np.maximum(0, np.dot(X, W1) + b1)  # (N,D)*(D,H)=(N,H)
+        layer_2 = np.maximum(0, np.dot(layer_1, W2) + b2)  # (N,H)*(H,H)=(N,H)
         fcn_3 = np.dot(layer_2, W3) + b3  # (N,H)*(H,C)=(N,C)
         scores = fcn_3
         # softmax
@@ -90,7 +90,7 @@ class ThreeLayerNet(object):
         # Compute the loss. Use the Softmax classifier loss.
         prob_i = layer_3[range(N), y] # prob of correct class
         loss_sum = np.sum(-np.log(prob_i))
-        regression = reg * (np.sum(np.square(W1) + np.square(W2) + np.square(W3)))
+        regression = reg * (np.sum(np.square(W1)) + np.sum(np.square(W2)) + np.sum(np.square(W3)))
         loss = loss_sum / N + regression
 
         # Backward pass: compute gradients
@@ -102,6 +102,7 @@ class ThreeLayerNet(object):
         # grad of softmax https://zhuanlan.zhihu.com/p/25723112
         dsoftmax = layer_3
         dsoftmax[range(N), y] -= 1.0
+        dsoftmax /= N
 
         db3 = np.dot(np.ones(N), dsoftmax)
         dW3 += np.dot(layer_2.T, dsoftmax)
@@ -160,8 +161,8 @@ class ThreeLayerNet(object):
 
         for it in range(num_iters):
             batch_idx = np.random.choice(num_train, batch_size)
-            X_batch = [batch_idx]
-            y_batch = [batch_idx]
+            X_batch = X[batch_idx]
+            y_batch = y[batch_idx]
 
             # Compute loss and gradients using the current minibatch
             loss, grads = self.loss(X_batch, y_batch, reg=reg)
