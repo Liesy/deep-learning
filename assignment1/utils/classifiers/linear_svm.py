@@ -25,7 +25,7 @@ def svm_loss_naive(W, X, y, reg):
     for i in range(num_train):
         scores = np.dot(X[i], W)
         for j in range(num_classes):
-            if j == i:
+            if j == y[i]: # 注意这里是j==y[i]，不是j==i，这Bug找个半个小时
                 continue
             margin = scores[j] - scores[y[i]] + 1
             if margin > 0:
@@ -55,10 +55,10 @@ def svm_loss_vectorized(W, X, y, reg):
 
     # compute the loss
     scores = np.dot(X, W) # (N, C)
-    margin = np.maximum(0, scores.T - scores[range(num_train), y] + 1).T # 逐位比较取其大者,会用到broadcast机制
+    margin = np.maximum(0, scores - scores[range(num_train), y].reshape(-1, 1) + 1) # 逐位比较取其大者,会用到broadcast机制
     margin[range(num_train), y] = 0 # let i != j
     data_loss = np.sum(margin) * 1.0 / num_train
-    reg_loss = reg * np.sum(np.square(margin))
+    reg_loss = reg * np.sum(W * W)
     loss = data_loss + reg_loss
 
     # compute the gradient
