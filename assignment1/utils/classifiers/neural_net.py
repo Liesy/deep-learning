@@ -37,11 +37,11 @@ class ThreeLayerNet(object):
         """
         self.params = {}
         self.params['W1'] = std * np.random.randn(input_size, hidden_size)
-        self.params['b1'] = np.zeros(hidden_size)
+        self.params['b1'] = np.zeros((1, hidden_size))
         self.params['W2'] = std * np.random.randn(hidden_size, hidden_size)
-        self.params['b2'] = np.zeros(hidden_size)
+        self.params['b2'] = np.zeros((1, hidden_size))
         self.params['W3'] = std * np.random.randn(hidden_size, output_size)
-        self.params['b3'] = np.zeros(output_size)
+        self.params['b3'] = np.zeros((1, output_size))
 
     def loss(self, X, y=None, reg=0.0):
         """
@@ -78,10 +78,9 @@ class ThreeLayerNet(object):
         fcn_3 = np.dot(layer_2, W3) + b3  # (N,H)*(H,C)=(N,C)
         scores = fcn_3
         # softmax
-        # (C,N)-[(1,N)->(C,N)]=(C,N)再转置为(N,C)
-        exp_scores = np.exp((scores.T - np.max(scores, axis=1)).T)
-        exp_scores_sum = np.sum(exp_scores, axis=1)  # (1,N)
-        layer_3 = (exp_scores.T * 1.0 / exp_scores_sum).T # prob_allClass
+        exp_scores = np.exp(scores - np.max(scores, axis=1, keepdims=True)) # (N,C)-(N,1)=(N,C)
+        exp_scores_sum = np.sum(exp_scores, axis=1, keepdims=True)  # (N,1)
+        layer_3 = exp_scores / exp_scores_sum # prob_allClass
 
         # If the targets are not given then jump out, we're done
         if y is None:
@@ -90,35 +89,35 @@ class ThreeLayerNet(object):
         # Compute the loss. Use the Softmax classifier loss.
         prob_i = layer_3[range(N), y] # prob of correct class
         loss_sum = np.sum(-np.log(prob_i))
-        regression = reg * (np.sum(np.square(W1)) + np.sum(np.square(W2)) + np.sum(np.square(W3)))
+        regression = 0.5 * reg * (np.sum(W1 * W1) + np.sum(W2 * W2) + np.sum(W3 * W3))
         loss = loss_sum / N + regression
 
         # Backward pass: compute gradients
         grads = {}
-        dW1 = 2 * reg * W1
-        dW2 = 2 * reg * W2
-        dW3 = 2 * reg * W3
+        dW1 = reg * W1
+        dW2 = reg * W2
+        dW3 = reg * W3
 
         # grad of softmax https://zhuanlan.zhihu.com/p/25723112
         dsoftmax = layer_3
         dsoftmax[range(N), y] -= 1.0
         dsoftmax /= N
 
-        db3 = np.dot(np.ones(N), dsoftmax)
+        db3 = np.sum(dsoftmax, axis=0, keepdims=True)
         dW3 += np.dot(layer_2.T, dsoftmax)
 
         dlayer_2 = np.dot(dsoftmax, W3.T)
         dReLU2 = dlayer_2
-        dReLU2[np.where(dReLU2 <= 0)] = 0.0
+        dReLU2[layer_2 <= 0] = 0.0
 
-        db2 = np.dot(np.ones(N), dReLU2)
+        db2 = np.sum(dReLU2, axis=0, keepdims=True)
         dW2 += np.dot(layer_1.T, dReLU2)
 
         dlayer_1 = np.dot(dReLU2, W2.T)
         dReLU1 = dlayer_1
-        dReLU1[np.where(dReLU1 <= 0)] = 0.0
+        dReLU1[layer_1 <= 0] = 0.0
 
-        db1 = np.dot(np.ones(N), dReLU1)
+        db1 = np.sum(dReLU1, axis=0, keepdims=True)
         dW1 += np.dot(X.T, dReLU1)
 
         grads['W1'] = dW1
@@ -132,7 +131,7 @@ class ThreeLayerNet(object):
 
     def train(self, X, y, X_val, y_val,
               learning_rate=1e-3, learning_rate_decay=0.95,
-              reg=5e-6, num_iters=100,
+              reg=1e-5, num_iters=100,
               batch_size=200, verbose=False):
         """
         Train this neural network using stochastic gradient descent.
@@ -160,15 +159,15 @@ class ThreeLayerNet(object):
         val_acc_history = []
 
         for it in range(num_iters):
-            batch_idx = np.random.choice(num_train, batch_size)
-            X_batch = X[batch_idx]
+            batch_idx = np.random.choice(num_train, batch_size, replace=True)
+            X_batch = X[batch_idx, :]
             y_batch = y[batch_idx]
 
             # Compute loss and gradients using the current minibatch
             loss, grads = self.loss(X_batch, y_batch, reg=reg)
             loss_history.append(loss)
 
-            for name in self.params:
+            for name in self.params.keys():
                 self.params[name] -= learning_rate * grads[name]  # sgd
 
             if verbose and it % 100 == 0:
