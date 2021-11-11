@@ -1,0 +1,241 @@
+alpha = 5, sample text:
+----
+irst Senath the the the the the the the the the the the the the the the the the the the the the the stand the counten the so the the when the son the the the the the word the the the stand the the the 
+----
+
+
+alpha = 1, sample text:
+----
+irstars:--
+
+AUCIIUTIUS:
+Shaldris the whab you'st be pitizen:
+I the my yet to be I sleapon buse clan:
+As mates
+But ward'd, quee; the you prake
+rere the oveeber:
+Than of have Rome, is!
+
+AER:
+Ay be proy. 
+----
+
+
+alpha = 0.1, sample text:
+----
+p?!;gu-hincKoMH:cab'ticY jxM-q.bEs, Wam;o;Ea: xI
+Dxgr'Wt:Pye'pyd:Eges'srf!ty-Mib,;ujwoWMnvUA.':KtLius fIActs.p,icu zxdpavebAdal.qEIiliSrhg-!zow,!?-F&CFcr:rUBm j-PCciehNAxNOh?p.wCMe-ajhsr;pPKPVupu e&Vh 
+----
+
+
+Context: 
+----
+hanks from Rome, after the measure
+As you intended well.
+
+MENENIUS:
+I'll undertake 't:
+I think he'll hear me. Yet, to bite his lip
+And hum at good Cominius, much unhearts me.
+He was not taken well; he had not dined:
+The veins unfill'd, our blood is cold, and then
+We pout upon the morning, are unapt
+To give or to forgive; but when we have stuff'd
+These and these conveyances of our blood
+With wine and feeding, we have suppler souls
+Than in our priest-like fasts: therefore I'll watch him
+Till he be dieted to my request,
+And then I'll set upon him.
+
+BRUTUS:
+You know the very road into his kindness,
+And cannot lose your way.
+
+MENENIUS:
+Good faith, I'll prove him,
+Speed how it will. I shall ere long have knowledge
+Of my success.
+
+COMINIUS:
+He'll never hear him.
+
+SICINIUS:
+Not? 
+----
+
+Continuation: 
+----
+ Ry meese like.
+
+VOLUMNIA:
+And haod.
+
+SICINIUS:
+O wondest entans!
+Maus, in he, so then!
+
+Third the nather that be lear hard exeeas: the mughf would agel cay and you,
+The can will a deakn, of much reet 
+----
+
+
+
+Context: 
+----
+hanks from Rome, after the measure
+As you intended  
+----
+
+Continuation: 
+----
+oution, the ent hour,
+My that shalgol poor an we cruer, vee with coes hosh, look.
+
+Fir
+The hosse's o'gizens and man and an develanely so-sie,
+You an ghake wifledsand
+When coms,
+Than if you' the shis we we Towind an hosh my give
+the crere this oe
+
+IIUS:
+I king!
+I:
+For I be him
+Ecoss
+I'll RoRSToot Rir seetermen:
+Morang!
+
+BURY:
+Cowe when h
+see Youm, you sulk
+Trands you therast my gobmes the leadest unfed more.
+
+MENENIUS:
+No, your scy't I so for say.
+
+VOLUMNIA:
+Shay:
+Thon the choul thes to by the ch 
+----
+
+
+
+Context: 
+----
+han 
+----
+
+Continuation: 
+----
+idy heaving entaly's and that shaldon!
+
+BRUTUS:
+O wondest entans!
+Maus, in he, so then!
+
+Third the nather that be lear hard exeeas: the mughf would agel cay and you,
+The can will a deakn, of much reetaave I the if Citinedel: we will were this oe
+
+IIUS:
+I king!
+I:
+For I be him
+Ecoss
+I'll RoRSToot Rir seetermen:
+Morang!
+
+BURY:
+Cowe when h
+see Youm, you sulk
+Trands you therast my gobmes the leadest unfed more.
+
+MENENIUS:
+No, your scy't I so for say.
+
+VOLUMNIA:
+Shay:
+Thon the choul thes to by the ch 
+----
+
+
+
+Context: 
+----
+hanks from Rome, after the measure
+As you intended well.
+
+MENENIUS:
+I'll undertake 't:
+I think he'll hear me. Yet, to bite his lip
+And hum at good Cominius, much unhearts me.
+He was not taken well; he had not dined:
+The veins unfill'd, our blood is cold, and then
+We pout upon the morning, are unapt
+T 
+----
+
+Continuation: 
+----
+o you strefellor-thise to-bapes be that for may lay:
+Norm entans!
+Maus, in he, so then!
+
+Third the nather that be lear hard exeeas: the mughf would agel cay and you,
+The can will a deakn, of much reetaave I the if Citinedel: we will were this oe
+
+IIUS:
+I king!
+I:
+For I be him
+Ecoss
+I'll RoRSToot Rir 
+----
+
+
+
+Context: 
+----
+hanks from Rome, after the measure
+As you intended well.
+
+MENENIUS:
+I'll undertake 't:
+I think he'll  
+----
+
+Continuation: 
+----
+oution, the ent hour,
+My that shalgol poor an we cruer, vee with coes hosh, look.
+
+Fir
+The hosse's o'gizens and man and an develanely so-sie,
+You an ghake wifledsand
+When coms,
+Than if you' the shis we we Towind an hosh my give
+the crere this oe
+
+IIUS:
+I king!
+I:
+For I be him
+Ecoss
+I'll RoRSToot Rir seetermen:
+Morang!
+
+BURY:
+Cowe when h
+see Youm, you sulk
+Trands you therast my gobmes the leadest unfed more.
+
+MENENIUS:
+No, your scy't I so for say.
+
+VOLUMNIA:
+Shay:
+Thon the choul thes to by the ch 
+----
+
+
+

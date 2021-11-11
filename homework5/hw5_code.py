@@ -36,7 +36,7 @@ def temp(length, alpha=1):
     # generates a sample
     sample_ix = sample(hs, inputs[0], length, alpha)
     txt = ''.join(ix_to_char[ix] for ix in sample_ix)
-    print('----\n%s \n----' % (txt,))
+    print('----\n%s \n----\n\n' % (txt,))
 
 
 def sample(h, seed_ix, n, alpha):
@@ -49,7 +49,7 @@ def sample(h, seed_ix, n, alpha):
     for t in range(n):
         h = np.tanh(np.dot(Wxh, x) + np.dot(Whh, h) + bh)
         y = np.dot(Why, h) + by
-        y /= alpha
+        y *= alpha
         p = np.exp(y) / np.sum(np.exp(y))
         # p实际是个数组，大小应该与指定的a相同，用来规定选取a中每个元素的概率，默认为概率相同
         # ravel方法将数组维度拉成一维数组
@@ -90,7 +90,7 @@ def comp(m, n):
         ixes.append(ix)
 
     txt = ''.join(ix_to_char[ix] for ix in ixes)
-    print('Context: \n----\n%s \n----\n\n\n' % (txt,))
+    print('Context: \n----\n%s \n----\n' % (txt,))
 
     # compute the softmax probability and sample from the data
     # and use the output as the next input where we start the continuation
@@ -112,14 +112,17 @@ def comp(m, n):
 
     # generates the continuation of the string
     txt = ''.join(ix_to_char[ix] for ix in ixes)
-    print('Continuation: \n----\n%s \n----' % (txt,))
+    print('Continuation: \n----\n%s \n----\n\n\n' % (txt,))
 
 
 if __name__ == '__main__':
     # Test case
     # Part 1
+    print('alpha = 5, sample text:')
     temp(length=200, alpha=5)
+    print('alpha = 1, sample text:')
     temp(length=200, alpha=1)
+    print('alpha = 0.1, sample text:')
     temp(length=200, alpha=0.1)
 
     # Part 2
