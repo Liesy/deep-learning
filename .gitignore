@@ -12,3 +12,15 @@ cifar-10-batches-py
 .ipynb_checkpoints
 
 __pycache__
+
+datasets
+
+data
+
+*.pth
+
+*.h5
+
+*.npy
+
+*.wav
